@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Certificate Generator</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #e6f2ff;
+      text-align: center;
+      padding: 20px;
+    }
+    input {
+      padding: 10px;
+      font-size: 18px;
+      width: 300px;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 5px;
+      cursor: pointer;
+    }
+    #certificate {
+      width: 1000px;
+      height: 700px;
+      background: #ffffff url('camp-bg.png') no-repeat center;
+      background-size: cover;
+      margin: 20px auto;
+      position: relative;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+    .text-block {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      color: #1e4d91;
+    }
+    .title {
+      top: 80px;
+      font-size: 38px;
+      font-weight: bold;
+    }
+    .subtitle {
+      top: 160px;
+      font-size: 24px;
+    }
+    .name {
+      top: 250px;
+      font-size: 48px;
+      font-family: 'Brush Script MT', cursive;
+    }
+    .footer {
+      top: 340px;
+      font-size: 20px;
+      font-style: italic;
+      color: #004d80;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎖️ Certificate Generator</h1>
+  <input type="text" id="nameInput" placeholder="Enter your name" />
+  <br>
+  <button onclick="generateCertificate()">Generate</button>
+  <button onclick="downloadCertificate()">Download as PDF</button>
+
+  <div id="certificate">
+    <div class="text-block title">CERTIFICATE OF ACHIEVEMENT</div>
+    <div class="text-block subtitle">This certificate is awarded to</div>
+    <div class="text-block name" id="certName">[Your Name]</div>
+    <div class="text-block footer">You have ventured through the world of recreational.</div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    function generateCertificate() {
+      const name = document.getElementById('nameInput').value.trim();
+      const display = document.getElementById('certName');
+      display.textContent = name ? name : '[Your Name]';
+    }
+
+    async function downloadCertificate() {
+      const { jsPDF } = window.jspdf;
+      const cert = document.getElementById("certificate");
+
+      await html2canvas(cert, { scale: 2 }).then(canvas => {
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF('landscape', 'pt', [canvas.width, canvas.height]);
+        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+        pdf.save("Certificate.pdf");
+      });
+    }
+  </script>
+
+</body>
+</html>
